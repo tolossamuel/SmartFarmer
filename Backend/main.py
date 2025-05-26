@@ -4,6 +4,7 @@
 from fastapi import FastAPI, HTTPException # type: ignore
 from fastapi.middleware.cors import CORSMiddleware # type: ignore
 from loginSystem import AuthenticationSystem
+from chatSystem import ChatSystem
 
 app = FastAPI()
 # CORS configuration
@@ -16,6 +17,7 @@ app.add_middleware(
 )
 # Initialize the login system
 login_system = AuthenticationSystem()
+ChatSystem = ChatSystem()
 @app.post("/login")
 async def login(email: str, password: str):
     """
@@ -88,6 +90,30 @@ async def get_all_users():
     """
     try:
         response = login_system.getAllUsers()
+        return response
+    except Exception as e:
+        return HTTPException(status_code=500, detail=str(e))
+    
+# chat system
+
+@app.get("/weather-discription")
+async def weather_description(user_input: str):
+    """
+    Endpoint for getting weather-related advice.
+    """
+    try:
+        response = ChatSystem.weather(user_input)
+        return response
+    except Exception as e:
+        return HTTPException(status_code=500, detail=str(e))
+@app.post("/chat")
+async def chat(user_input: str, user_history: str = ""):
+    """
+    Endpoint for chatting with the AgriBuddy system.
+    """
+    try:
+        response = ChatSystem.chat(user_input, user_history)
+     
         return response
     except Exception as e:
         return HTTPException(status_code=500, detail=str(e))
