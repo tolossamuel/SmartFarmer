@@ -5,7 +5,10 @@ from fastapi import FastAPI, HTTPException # type: ignore
 from fastapi.middleware.cors import CORSMiddleware # type: ignore
 from loginSystem import AuthenticationSystem
 from chatSystem import ChatSystem
-
+from fastapi import FastAPI, File, UploadFile, Form
+import os
+import shutil
+from crop_photo import CropPhoto # Assuming this is the correct import path for your CropPhoto class
 app = FastAPI()
 # CORS configuration
 app.add_middleware(
@@ -17,6 +20,8 @@ app.add_middleware(
 )
 # Initialize the login system
 login_system = AuthenticationSystem()
+UPLOAD_DIR = "uploads"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 ChatSystem = ChatSystem()
 @app.post("/login")
 async def login(email: str, password: str):
@@ -114,6 +119,22 @@ async def chat(user_input: str, user_history: str = ""):
     try:
         response = ChatSystem.chat(user_input, user_history)
      
+        return response
+    except Exception as e:
+        return HTTPException(status_code=500, detail=str(e))
+@app.post("/crop")
+async def crop(image: UploadFile = File(...) ):
+    """
+    Endpoint for analyzing crop images.
+    """
+    try:
+        file_path = os.path.join(UPLOAD_DIR, image.filename)
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(image.file, buffer)
+        crop_photo = CropPhoto(file_path)
+        response = crop_photo.crop()
+        if "\"crop_name\": \"unknown\"" in response:
+            return HTTPException(status_code=400, detail="Crop not recognized or image not clear.")
         return response
     except Exception as e:
         return HTTPException(status_code=500, detail=str(e))
