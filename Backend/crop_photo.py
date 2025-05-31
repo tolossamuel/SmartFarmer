@@ -1,7 +1,8 @@
 import google.generativeai as genai
 import os
 from PIL import Image # Required for opening image files
-
+import json
+from fastapi.responses import JSONResponse
 class CropPhoto:
     def __init__(self, image_path):
         self.image_path = image_path
@@ -48,15 +49,22 @@ class CropPhoto:
                 )
             )
             # The model is instructed to return JSON directly.
-            return response.text
+
+            data = json.loads(response.text)
+            return JSONResponse(content=data, status_code=200)
         except AttributeError: # Fallback if response_mime_type or genai.types is not supported
             try:
                 response = self.client.generate_content(content_parts)
                 return response.text # Model should still attempt to return JSON based on prompt
             except Exception as e:
-                safe_error_message = str(e).replace('"', '\\"')
-                return f'{{"crop_name": "unknown", "description": "Error: API call failed (fallback) - {safe_error_message}."}}'
+                return JSONResponse(content={
+                    "crop_name": "unknown",
+                    "description": "Model did not return valid JSON.",
+                    "raw_response": response.text
+                }, status_code=500)
 
         except Exception as e:
-            safe_error_message = str(e).replace('"', '\\"')
-            return f'{{"crop_name": "unknown", "description": "Error: API call failed - {safe_error_message}."}}'
+            return JSONResponse(content={
+                "crop_name": "unknown",
+                "description": f"Error: API call failed - {str(e)}"
+            }, status_code=500)

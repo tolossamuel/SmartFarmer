@@ -133,8 +133,6 @@ async def crop(image: UploadFile = File(...) ):
             shutil.copyfileobj(image.file, buffer)
         crop_photo = CropPhoto(file_path)
         response = crop_photo.crop()
-        if "\"crop_name\": \"unknown\"" in response:
-            return HTTPException(status_code=400, detail="Crop not recognized or image not clear.")
         return response
     except Exception as e:
         return HTTPException(status_code=500, detail=str(e))

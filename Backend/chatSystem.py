@@ -2,6 +2,7 @@ import google.generativeai as genai
 import os
 from dotenv import load_dotenv
 import json
+from fastapi.responses import JSONResponse
 
 
 class ChatSystem:
@@ -41,19 +42,28 @@ class ChatSystem:
             if response and response.text:
                 generated_text = response.text
                 
-                return json.dumps({
-                    "status": "success",
-                    "message": generated_text
-                })
-            return json.dumps({
-                "status": "error",
-                "message": "No response generated."
-            })
+                return JSONResponse(
+                    content={
+                        "status": "success",
+                        "message": generated_text
+                    },
+                    status_code=200
+                )
+            return JSONResponse(
+                content={
+                    "status": "error",
+                    "message": "No response generated."
+                },
+                status_code=500
+            )
         except Exception as e:
-            return json.dumps({
-                "status": "error",
-                "message": str(e)
-            })
+            return JSONResponse(
+                content={
+                    "status": "error",
+                    "message": str(e)
+                },
+                status_code=500
+            )
     def weather(self, user_input):
         try:
             prompts = f"""
@@ -70,17 +80,27 @@ class ChatSystem:
             )
             if response and response.text:
                 generated_text = response.text
-                return json.dumps({
-                    "status": "success",
-                    "message": generated_text
-                })
-            return json.dumps({
-                "status": "error",
-                "message": "No response generated."
-            })
+                return JSONResponse(
+                    content={
+                        "status": "success",
+                        "message": generated_text
+                    },
+                    status_code=200
+                )
+                
+            return JSONResponse(
+                content={
+                    "status": "error",
+                    "message": "No response generated."
+                },
+                status_code=500
+            )
         except Exception as e:
-            return json.dumps({
-                "status": "error",
-                "message": str(e)
-            })
-        
+            return JSONResponse(
+                content={
+                    "status": "error",
+                    "message": str(e)
+                },
+                status_code=500
+            )
+    
