@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async'; // For TimeoutException
@@ -158,8 +159,11 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 
   Future<Map<String, dynamic>> _fetchWeather(double lat, double lon) async {
-    const apiKey =
-        '9e558e3fa2a50dcac6d291ff0e018ec8'; // Keep API keys out of VCS in real apps
+    // const apiKey =
+    //     '9e558e3fa2a50dcac6d291ff0e018ec8';
+    // // Keep API keys out of VCS in real apps
+    final apiKey =
+        dotenv.env['OPENWEATHER_API_KEY'];
     final url = Uri.parse(
       'https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&appid=$apiKey&units=metric',
     );

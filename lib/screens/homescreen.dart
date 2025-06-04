@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
@@ -53,7 +54,8 @@ class _FarmDashboardScreenState extends State<FarmDashboardScreen> {
   String weatherMessage = 'Loading weather...'; // Default weather message
   String temperature = '0'; // Default temperature
   String weatherDescription = 'Unknown'; // Default weather description
-  final String apiKey = '9e558e3fa2a50dcac6d291ff0e018ec8'; // Provided API key
+
+  final apiKey = dotenv.env['OPENWEATHER_API_KEY'] ?? '9e558e3fa2a50dcac6d291ff0e018ec8';
 
   late Timer _timer;
   int currentTipIndex = 0;

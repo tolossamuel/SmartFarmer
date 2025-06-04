@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:smartfarmer/screens/news.dart';
 
 Future<List<NewsArticle>> fetchAgriculturalNews() async {
-  final apiKey = 'd7a46317181c47799bf84d5e973f0ce1';
+  final apiKey = dotenv.env['NEWSAPI_KEY'] ;
+
   final query =
       'AGRICULTURE AND INDIA OR INDIA FARMERS OR CROPS INDIA OR LIVESTOCK INDIA';
 

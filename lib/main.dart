@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smartfarmer/auth/authscreen.dart';
@@ -10,7 +11,8 @@ import 'package:smartfarmer/screens/onboarding/splash.dart';
 import 'package:smartfarmer/screens/homescreen.dart';
 import 'package:smartfarmer/service/shared_prefs_serv.dart'; // Optional helper
 
-void main() async {
+Future<void> main() async {
+  await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize SharedPreferences
@@ -60,7 +62,7 @@ class MyApp extends StatelessWidget {
         '/onboarding': (context) => const OnboardingScreen(),
         '/signin': (context) => const SignInScreen(),
         '/signup': (context) => const SignUpScreen(),
-        '/authscreen':(context)=>AuthScreen()
+        '/authscreen': (context) => AuthScreen(),
       },
     );
   }
